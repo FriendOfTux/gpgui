@@ -9,13 +9,6 @@ It is written in python and depends on "python-gnupg", "PySide6" and "gpg"\
 The script offers the possibility to interact with gpg, as well as learn\
 basics about QT-GUI's and getopt
 
-DATA:\
-uid = "testgpguser@mydomain.com"\
-passwd = 'my passphrase'
-
-uid = "anothergpguser@otherdomain.com"\
-passwd: "other password"
-
 CAN:\
 encrypt / decrypt string/file\
 import / export public key\
