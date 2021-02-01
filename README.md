@@ -3,7 +3,7 @@ Graphical Interface for GPG
 
 DATA:\
 uid = "testgpguser@mydomain.com"\
-passwd = 'my passphrase'\
+passwd = 'my passphrase'
 
 uid = "anothergpguser@otherdomain.com"\
 passwd: "other password"
