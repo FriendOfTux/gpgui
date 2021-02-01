@@ -1,7 +1,7 @@
 # gpgui
 Graphical Interface for GPG
 
-Developed under: Pop!_OS, Arch
+Developed under: Pop!_OS, Arch\
 Installation: see INSTALL.sh
 
 gpgui is a script used to teach Students about the GNU Privacy Guard\
