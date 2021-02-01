@@ -22,7 +22,7 @@ change default user for signing\
 catch text from other application\
 insert text into other application\
 import and save password\
-\
+
 RESSOURCES:\
 gpg: 		gnupg.org\
   			digitalocean.com/community/tutorials/how-to-use-gpg-to-encrypt-and-sign-messages\
