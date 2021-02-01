@@ -10,20 +10,18 @@ passwd: "other password"\
 
 
 CAN:\
-ENCRYPT STRING/FILE\
-DECRYPT STRING/FILE\
-IMPORT PUBLIC KEY\
-EXPORT PUBLIC KEY\
-AUTO-USE IMPORTED KEY\
-CHANGE RECIPIENT\
-UN/HIDE PASSPHRASE\
-CLI-ONLY MODE\
+encrypt / decrypt string/file\
+import / export public key\
+auto-use imported key\
+change recipient\
+un/hide passphrase\
+cli-only / gui-only mode\
 
 CANT (FOR NOW):\
-CHANGE DEFAULT USER FOR SIGNING\
-CATCH TEXT FROM OTHER GUI/CLI\
-INSERT TEXT INTO OTHER GUI/CLI\
-IMPORT AND SAVE PASSWORD (SECURE)\
+change default user for signing\
+catch text from other application\
+insert text into other application\
+import and save password\
 \
 RESSOURCES:\
 gpg: 		gnupg.org\
