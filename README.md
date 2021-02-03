@@ -1,6 +1,8 @@
 # gpgui
 Graphical Interface for GPG
 
+![gpgui.png](https://raw.githubusercontent.com/FriendOfTux/gpgui/main/gpgui.png)
+
 Developed under: Pop!_OS, Arch\
 Installation: see INSTALL.sh
 
