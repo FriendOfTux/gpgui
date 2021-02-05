@@ -7,7 +7,7 @@ Developed under: Pop!_OS, Arch\
 Installation: see INSTALL.sh
 
 gpgui is a script used to teach Students about the GNU Privacy Guard\
-It is written in python and depends on "python-gnupg", "PySide6" and "gpg"\
+It is written in python and depends on "python-gnupg", "PySide6" and "gpg".\
 The script offers the possibility to interact with gpg, as well as learn\
 basics about QT-GUI's and getopt
 
@@ -19,13 +19,13 @@ change recipient\
 un/hide passphrase\
 cli-only / gui-only mode
 
-CANT (FOR NOW):\
+CAN'T (FOR NOW):\
 change default user for signing\
 catch text from other application\
 insert text into other application\
 import and save password
 
-RESSOURCES:\
+RESOURCES:\
 gpg: 		gnupg.org\
   			digitalocean.com/community/tutorials/how-to-use-gpg-to-encrypt-and-sign-messages\
 gnupg:		pythonhosted.org/gnupg/gnupg.html\
