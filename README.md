@@ -6,7 +6,7 @@ Graphical Interface for GPG
 Developed under: Pop!_OS, Arch\
 Installation: see INSTALL.sh
 
-gpgui is a script used to teach Students about the GNU Privacy Guard\
+gpgui is a script I made to teach Students about the GNU Privacy Guard\
 It is written in python and depends on "python-gnupg", "PySide6" and "gpg".\
 The script offers the possibility to interact with gpg, as well as learn\
 basics about QT-GUI's and getopt
