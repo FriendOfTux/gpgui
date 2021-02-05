@@ -112,7 +112,7 @@ def list_keys(do, mode):						#list all public keys
 
 def printLicense(cli):							#print the license of the program
     dir = os.path.dirname(os.path.realpath(sys.argv[0]))
-    file = open(dir + '/LICENSE', 'r')
+    file = open(dir + '/About/License/LICENSE', 'r')
     license = file.read()
     if cli:
         print(license)
