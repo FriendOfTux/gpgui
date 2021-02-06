@@ -5,231 +5,232 @@ import gpgcli
 from PySide6.QtCore import Slot
 from PySide6.QtGui import QAction
 from PySide6.QtWidgets import QApplication, QWidget, \
-QTextEdit, QLineEdit, QMenuBar, QMenu, QCheckBox, \
-QFileDialog, QComboBox, QGridLayout, QHBoxLayout, \
-QLabel, QPushButton, QMessageBox
+    QTextEdit, QLineEdit, QMenuBar, QMenu, QCheckBox, \
+    QFileDialog, QComboBox, QGridLayout, QHBoxLayout, \
+    QLabel, QPushButton, QMessageBox
 
 app = QApplication()
 
-class gpgui(QWidget):
+
+class GPGui(QWidget):
 
     def __init__(self):
         QWidget.__init__(self)
-        self.setGeometry(100, 100, 900, 600)					#modify window
-        self.setWindowTitle("gpgui")
+        self.setGeometry(100, 100, 900, 600)  # modify window
+        self.setWindowTitle("GPGui")
 
         # uid = "testgpguser@mydomain.com"
-        self.passwd = 'my passphrase'						#set default password
+        self.passwd = 'my passphrase'  # set default password
 
-        self.layout = QGridLayout()						#use gridlayout to cascade layouts
+        self.layout = QGridLayout()  # use a gridlayout to cascade layouts
         self.setLayout(self.layout)
 
-        self.menuBar = QMenuBar()						#add MenuBar
+        self.menuBar = QMenuBar()  # add a menu-bar
         self.layout.addWidget(self.menuBar, 0, 0)
 
-        self.importMenu = QMenu("Import")					#Create Import Menu
-        self.menuBar.addMenu(self.importMenu)					#and related Actions
+        self.importMenu = QMenu("Import")  # create a "import" menu
+        self.menuBar.addMenu(self.importMenu)  # and related actions
         self.importPubKeyAction = QAction("Import Public Key")
-        self.importPubKeyAction.triggered.connect(self.importKeyFile)
+        self.importPubKeyAction.triggered.connect(self.import_key_file)
         self.importMenu.addAction(self.importPubKeyAction)
         self.importClearTextAction = QAction("Import Clear Text")
-        self.importClearTextAction.triggered.connect(self.importClearText)
+        self.importClearTextAction.triggered.connect(self.import_clear_text)
         self.importMenu.addAction(self.importClearTextAction)
         self.importCipherTextAction = QAction("Import Cipher Text")
-        self.importCipherTextAction.triggered.connect(self.importCipherText)
+        self.importCipherTextAction.triggered.connect(self.import_cipher_text)
         self.importMenu.addAction(self.importCipherTextAction)
 
-        self.exportMenu = QMenu("Export")					#Create Export Menu
+        self.exportMenu = QMenu("Export")  # create a "export" menu
         self.menuBar.addMenu(self.exportMenu)
         self.exportPubKeyAction = QAction("Export Public Key")
-        self.exportPubKeyAction.triggered.connect(self.exportKeyFile)
+        self.exportPubKeyAction.triggered.connect(self.export_key_file)
         self.exportMenu.addAction(self.exportPubKeyAction)
         self.exportClearTextAction = QAction("Export Clear Text")
-        self.exportClearTextAction.triggered.connect(self.exportClearText)
+        self.exportClearTextAction.triggered.connect(self.export_clear_text)
         self.exportMenu.addAction(self.exportClearTextAction)
         self.exportCipherTextAction = QAction("Export Cipher Text")
-        self.exportCipherTextAction.triggered.connect(self.exportCipherText)
+        self.exportCipherTextAction.triggered.connect(self.export_cipher_text)
         self.exportMenu.addAction(self.exportCipherTextAction)
 
-        self.signMenu = QMenu("Signatures")					#Create Signatures Menu
+        self.signMenu = QMenu("Signatures")  # create a "signatures" menu
         self.menuBar.addMenu(self.signMenu)
         self.signFileAction = QAction("Create Signature")
-        self.signFileAction.triggered.connect(self.signFile)
+        self.signFileAction.triggered.connect(self.sign_file)
         self.signMenu.addAction(self.signFileAction)
         self.verifySignatureAction = QAction("Verify Signature")
-        self.verifySignatureAction.triggered.connect(self.verifySign)
+        self.verifySignatureAction.triggered.connect(self.verify_signature)
         self.signMenu.addAction(self.verifySignatureAction)
 
-        self.aboutMenu = QMenu("About")						#Create About Menu
+        self.aboutMenu = QMenu("About")  # create a "about" menu
         self.menuBar.addMenu(self.aboutMenu)
         self.infoAction = QAction("Info")
-        self.infoAction.triggered.connect(self.displayInfo)
+        self.infoAction.triggered.connect(self.display_info)
         self.aboutMenu.addAction(self.infoAction)
         self.licenseAction = QAction("License")
-        self.licenseAction.triggered.connect(self.displayLicense)
+        self.licenseAction.triggered.connect(self.display_license)
         self.aboutMenu.addAction(self.licenseAction)
 
-        self.textField = QTextEdit("Insert Text here")				#Create a Field for Cleartext
-        self.textField.textChanged.connect(self.onTextChanged)
+        self.textField = QTextEdit("Insert Text here")  # create a field for the cleartext
+        self.textField.textChanged.connect(self.on_text_changed)
         self.layout.addWidget(self.textField, 1, 0)
 
-        self.cipherTextField = QTextEdit()					#Create a Field for Ciphertext
-        self.cipherTextField.textChanged.connect(self.onCipherChanged)
+        self.cipherTextField = QTextEdit()  # create a field for the ciphertext
+        self.cipherTextField.textChanged.connect(self.on_ciphertext_changed)
         self.layout.addWidget(self.cipherTextField, 2, 0)
 
-        self.keyLayout = QHBoxLayout()						#Create a Second Layout and 
-        self.layout.addLayout(self.keyLayout, 3, 0)				#add it inside the 3 line
-        self.keyBox = QComboBox()						#Create a ComboBox for the imported Keys
-        self.updatekeyBox()							#load the key list
-        self.keyBox.currentIndexChanged.connect(self.onReceiverChanged)
-        self.addKeyButton = QPushButton("ADD")					#Create a Button for Adding/Generating Keys
-        self.addKeyButton.clicked.connect(self.addKeyLayout)
-        self.removeKeyButton = QPushButton("REMOVE")				#and one to Remove Keys
-        self.removeKeyButton.clicked.connect(self.addKeyLayout)			#(both will create more elements later)
+        self.keyLayout = QHBoxLayout()  # create a second layout and
+        self.layout.addLayout(self.keyLayout, 3, 0)  # add it inside the 3 line
+        self.keyBox = QComboBox()  # create a combobox for the imported keys
+        self.update_key_box()  # load the key list
+        self.keyBox.currentIndexChanged.connect(self.on_recipient_changed)
+        self.addKeyButton = QPushButton("ADD")  # create a button for adding/generating keys
+        self.addKeyButton.clicked.connect(self.add_key_layout)
+        self.removeKeyButton = QPushButton("REMOVE")  # and one to remove keys
+        self.removeKeyButton.clicked.connect(self.add_key_layout)  # (both will create more elements later)
         self.keyLayout.addWidget(self.keyBox, 8)
         self.keyLayout.addWidget(self.addKeyButton, 1)
         self.keyLayout.addWidget(self.removeKeyButton, 1)
 
-        self.passphraseLayout = QHBoxLayout()					#Create a Layout and add it to the 4 line
+        self.passphraseLayout = QHBoxLayout()  # create a layout and add it to the 4 line
         self.layout.addLayout(self.passphraseLayout, 4, 0)
 
-        self.passphraseEdit = QLineEdit(self.passwd)				#Create a Field for Passphrases (to decrypt text)
-        self.passphraseEdit.setEchoMode(QLineEdit.Password)			#hide the text (transform letters to circles)
-        self.passphraseEdit.returnPressed.connect(self.onPassphraseEntered)
+        self.passphraseEdit = QLineEdit(self.passwd)  # create a field for the passphrases (to decrypt text)
+        self.passphraseEdit.setEchoMode(QLineEdit.Password)  # hide the text (transform letters to circles)
+        self.passphraseEdit.returnPressed.connect(self.on_passphrase_entered)
         self.passphraseLayout.addWidget(self.passphraseEdit, 8)
 
-        self.hideBox = QCheckBox("Show")					#Create a Button to hide/show the passphrase
-        self.hideBox.stateChanged.connect(self.onHideBoxChecked)
+        self.hideBox = QCheckBox("Show")  # create a button to hide/show the passphrase
+        self.hideBox.stateChanged.connect(self.on_hide_box_checked)
         self.passphraseLayout.addWidget(self.hideBox, 1)
 
-        self.passphraseButton = QPushButton("OK")				#Create a Button to be able to confirm the the passphrase
-        self.passphraseButton.clicked.connect(self.onPassphraseEntered)
+        self.passphraseButton = QPushButton("OK")  # create a button to be able to confirm the the passphrase
+        self.passphraseButton.clicked.connect(self.on_passphrase_entered)
         self.passphraseLayout.addWidget(self.passphraseButton, 1)
 
-        try:									#Load the Keys and Select the first as Recipient
+        try:  # load the keys and select the first as recipient
             keys = gpgcli.list_keys(False, 0)
             self.rec = keys[0]
-        except:
+        except RuntimeError:
             print("No keys found, so no Recipient selected")
-
         self.show()
 
-    def updateText(self):							#update the DEcrypted Text if eg the Passphrase has changed
-        cipherText = self.cipherTextField.toPlainText()
-        dec = gpgcli.dec(cipherText, self.passwd)
+    def update_text(self):  # update the decrypted text if eg the passphrase has changed
+        cipher_text = self.cipherTextField.toPlainText()
+        dec = gpgcli.dec(cipher_text, self.passwd)
         self.textField.setText(str(dec))
 
-    def updateCipher(self):							#update the Encrypted Text if eg the recipient has changed
+    def update_cipher(self):  # update the encrypted text if eg the recipient has changed
         text = self.textField.toPlainText()
         enc = gpgcli.enc(str(text), self.rec)
         self.cipherTextField.setText(enc)
 
-    def updatekeyBox(self):							#Update the ComboBox containing the Keys (add only)
+    def update_key_box(self):  # update the combobox containing the keys (add only)
         new_keys = gpgcli.list_keys(False, 0)
-        for k in new_keys:
-            if self.keyBox.findText(k) == -1:
-                self.keyBox.addItem(k)
+        for new_key in new_keys:
+            if self.keyBox.findText(new_key) == -1:
+                self.keyBox.addItem(new_key)
 
-    def display(self, text):							#Add a Label to show a Message if needed
-        self.statusLayout = QHBoxLayout()					#Add a Button to remove both if acknowledged
+    def display(self, text):  # add a label to show a message if needed
+        self.statusLayout = QHBoxLayout()  # add a button to remove both if wanted
         self.layout.addLayout(self.statusLayout, 5, 0)
         self.statusLabel = QLabel(text)
         self.statusLayout.addWidget(self.statusLabel)
         self.removeLabelButton = QPushButton("OK")
-        self.removeLabelButton.clicked.connect(self.removeStatusLayout)
+        self.removeLabelButton.clicked.connect(self.remove_status_layout)
         self.statusLayout.addWidget(self.removeLabelButton)
 
     @Slot()
-    def displayLicense(self):							#Create a Popup to show the License
-        license = gpgcli.printLicense(False)
-        msgBox = QMessageBox()
-        msgBox.setText(str(license))
-        msgBox.exec_()
+    def display_license(self):  # create a popup to show the license
+        project_license = gpgcli.print_license(False)
+        msg_box = QMessageBox()
+        msg_box.setText(str(project_license))
+        msg_box.exec_()
 
-    @Slot()									#Create a Popup to show Info about the Program
-    def displayInfo(self):
-        info = gpgcli.printInfo(False)
-        msgBox = QMessageBox()
-        msgBox.setText(str(info))
-        msgBox.exec_()
+    @Slot()  # create a popup to show information about the program
+    def display_info(self):
+        info = gpgcli.print_info(False)
+        msg_box = QMessageBox()
+        msg_box.setText(str(info))
+        msg_box.exec_()
 
-    @Slot()									#Import Text from a File
-    def importClearText(self):
-        TextFile = QFileDialog.getOpenFileName()
-        file = open(str(TextFile[0]), 'r')
+    @Slot()  # import text from a file
+    def import_clear_text(self):
+        text_file = QFileDialog.getOpenFileName()
+        file = open(str(text_file[0]), 'r')
         self.textField.setText(file.read())
-        self.updateCipher()
+        self.update_cipher()
 
     @Slot()
-    def removeStatusLayout(self):						#Remove the Text Label if the Message was Acknowledget (Button pressed)
-         if self.statusLayout is not None:
-             while self.statusLayout.count():
-                 item = self.statusLayout.takeAt(0)
-                 widget = item.widget()
-                 if widget is not None:
-                     widget.deleteLater()
-                 else:
-                     self.layout.clearLayout(item.layout())
-										#(Redundant Code -> if a "@SLot"-Function is used from a not 										
-										#"connected" function the Function gets executed at the Start of the Program)
-    @Slot()									
-    def removeKeyLayout(self):							#Remove LineEdits and Button after a Key was Created/Deleted
+    def remove_status_layout(self):  # remove the text label if the message was ok (button pressed)
+        try:
+            if self.statusLayout is not None:
+                while self.statusLayout.count():
+                    item = self.statusLayout.takeAt(0)
+                    widget = item.widget()
+                    if widget is not None:
+                        widget.deleteLater()
+                    else:
+                        self.layout.clearLayout(item.layout())
+                    # (redundant code -> if a "@Slot"-function is used from a not
+                    # "connected" function the function gets executed at the start of the program)
+        except AttributeError:
+            pass
+
+    @Slot()
+    def remove_key_layout(self):  # remove line-edits and Button after a key was created/deleted
         if self.keyAddLayout is not None:
-           while self.keyAddLayout.count():
-               item = self.keyAddLayout.takeAt(0)
-               widget = item.widget()
-               if widget is not None:
-                   widget.deleteLater()
-               else:
-                   self.layout.clearLayout(item.layout())
-        
+            while self.keyAddLayout.count():
+                item = self.keyAddLayout.takeAt(0)
+                widget = item.widget()
+                if widget is not None:
+                    widget.deleteLater()
+                else:
+                    self.layout.clearLayout(item.layout())
 
     @Slot()
-    def importKeyFile(self):							#Import Public Key
-        fname =QFileDialog.getOpenFileName()
-        self.rec = gpgcli.import_key(fname[0])
-        self.updatekeyBox()
+    def import_key_file(self):  # import public key
+        filename = QFileDialog.getOpenFileName()
+        self.rec = gpgcli.import_key(filename[0])
+        self.update_key_box()
         self.keyBox.setCurrentText(self.rec)
 
-
     @Slot()
-    def importCipherText(self):							#Import Encrypted Text
-        fname = QFileDialog.getOpenFileName()
-        file = open(str(fname[0]), 'r')
+    def import_cipher_text(self):  # import encrypted text
+        filename = QFileDialog.getOpenFileName()
+        file = open(str(filename[0]), 'r')
         self.cipherTextField.setText(file.read())
-        self.updateText()
+        self.update_text()
 
     @Slot()
-    def exportKeyFile(self):							#Export Pubic key
+    def export_key_file(self):  # export pubic key
         uid = self.keyBox.currentText()
         gpgcli.export_key(uid)
         self.display("Exported to " + uid + ".pub")
 
+    @Slot()
+    def export_cipher_text(self):  # export encrypted text
+        cipher_text = self.cipherTextField.toPlainText()
+        cipher_text_file, _ = QFileDialog.getSaveFileName()
+        with open(cipher_text_file, 'w') as file:
+            file.write(str(cipher_text))
 
     @Slot()
-    def exportCipherText(self):							#Export Encrypted Text
-        cipherText = self.cipherTextField.toPlainText()
-        cipherTextFile, _ =QFileDialog.getSaveFileName()
-        with open(cipherTextFile, 'w') as file:
-            file.write(str(cipherText))
+    def export_clear_text(self):  # export text
+        clear_text = self.textField.toPlainText()
+        clear_text_file, _ = QFileDialog.getSaveFileName()
+        with open(clear_text_file, 'w') as file:
+            file.write(str(clear_text))
 
     @Slot()
-    def exportClearText(self):							#Export Text
-        clearText = self.textField.toPlainText()
-        clearTextFile, _ =QFileDialog.getSaveFileName()
-        with open(clearTextFile, 'w') as file:
-            file.write(str(clearText))
-
-    @Slot()
-    def addKeyLayout(self):							#Add Items on Request (Create/Delete Key Option)
+    def add_key_layout(self):  # add items as needed (create/delete key option)
         try:
-            self.removeKeyLayout()
-        except:
+            self.remove_key_layout()
+        except RuntimeError:
             pass
-        buttonText = self.sender().text()
+        button_text = self.sender().text()
         self.uidEdit = QLineEdit("EMail")
         self.phraseEdit = QLineEdit("Passphrase")
-        self.genButton = QPushButton(buttonText)
+        self.genButton = QPushButton(button_text)
         self.remButton = QPushButton("X")
         self.keyAddLayout = QHBoxLayout()
         self.layout.addLayout(self.keyAddLayout, 6, 0)
@@ -237,27 +238,27 @@ class gpgui(QWidget):
         self.keyAddLayout.addWidget(self.phraseEdit, 33)
         self.keyAddLayout.addWidget(self.genButton, 23)
         self.keyAddLayout.addWidget(self.remButton, 10)
-        self.remButton.clicked.connect(lambda: self.removeKeyLayout())
+        self.remButton.clicked.connect(lambda: self.remove_key_layout())
 
-        if buttonText == "ADD":
-            self.genButton.clicked.connect(self.createKey)
-        elif buttonText == "REMOVE":
+        if button_text == "ADD":
+            self.genButton.clicked.connect(self.create_key)
+        elif button_text == "REMOVE":
             self.phraseEdit.setText(self.passphraseEdit.text())
             self.uidEdit.setText(self.keyBox.currentText())
-            self.genButton.clicked.connect(self.deleteKey)
+            self.genButton.clicked.connect(self.delete_key)
 
-    @Slot()									#Create Key
-    def createKey(self):
+    @Slot()  # create key
+    def create_key(self):
         uid = self.uidEdit.text()
         phrase = self.phraseEdit.text()
         status = gpgcli.generate_key(uid, phrase)
-        if status == True:
-            self.removeKeyLayout()
-            self.updatekeyBox()
+        if status:
+            self.remove_key_layout()
+            self.update_key_box()
             self.keyBox.setCurrentText(uid)
 
-    @Slot()									#Delete Secret and Public Key
-    def deleteKey(self):
+    @Slot()  # delete secret and public key
+    def delete_key(self):
         uid = self.uidEdit.text()
         keys = gpgcli.list_keys(False, 2)
         i = 0
@@ -265,89 +266,90 @@ class gpgui(QWidget):
         for k in keys[0]:
             if k == uid:
                 fingerprint = keys[1][i]
-            i = i+1
+            i = i + 1
         phrase = self.phraseEdit.text()
         status = gpgcli.remove_key(fingerprint, phrase)
-        if status == True:
-            self.removeKeyLayout()
-            self.keyBox.setCurrentIndex(self.keyBox.currentIndex()-1)
+        if status:
+            self.remove_key_layout()
+            self.keyBox.setCurrentIndex(self.keyBox.currentIndex() - 1)
             self.keyBox.removeItem(self.keyBox.findText(uid))
 
     @Slot()
-    def signFile(self):								#Sign a File
-         try:
-             self.removeStatusLayout()
-         except:
-             pass
-         sigFile = QFileDialog.getOpenFileName()
-         print(sigFile)
-         sigStatus = gpgcli.sign_detached(sigFile[0], self.passwd)
-         if sigStatus is not None:
-             self.display(sigStatus)
-         else:
-             self.display("ERROR! Have you used the right password?")
-
-    @Slot()									#Verify Signed FIle
-    def verifySign(self):
+    def sign_file(self):  # sign a file
         try:
-            self.removeStatusLayout()
-        except:
+            self.remove_status_layout()
+        except RuntimeError:
             pass
-        sigFiles = QFileDialog.getOpenFileNames()
-        if ".sig" in sigFiles[0][0]:
-            sign = sigFiles[0][0]
-            file = sigFiles[0][1]
-            sigStatus = gpgcli.verify_signature(file, sign)
-        elif ".sig" in sigFiles[0][1]:
-            sign = sigFiles[0][1]
-            file = sigFiles[0][0]
-            sigStatus = gpgcli.verify_signature(bfile, sign)
+        sig_file = QFileDialog.getOpenFileName()
+        print(sig_file)
+        sig_status = gpgcli.sign_detached(sig_file[0], self.passwd)
+        if sig_status is not None:
+            self.display(sig_status)
+        else:
+            self.display("ERROR! Have you used the right password?")
+
+    @Slot()  # verify a signed file
+    def verify_signature(self):
+        try:
+            self.remove_status_layout()
+        except RuntimeError:
+            pass
+        sig_status = ""
+        sig_files = QFileDialog.getOpenFileNames()
+        if ".sig" in sig_files[0][0]:
+            sign = sig_files[0][0]
+            file = sig_files[0][1]
+            sig_status = gpgcli.verify_signature(file, sign)
+        elif ".sig" in sig_files[0][1]:
+            sign = sig_files[0][1]
+            file = sig_files[0][0]
+            sig_status = gpgcli.verify_signature(file, sign)
         else:
             print("NO SIGNATURE FOUND")
-        if sigStatus is not None:
-            self.display(sigStatus)
+        if sig_status != "":
+            self.display(sig_status)
         else:
             self.display("ERROR")
 
-    @Slot()									#Update Encrypted Text if Text has changed
-    def onTextChanged(self):
+    @Slot()  # update the encrypted text if the text has changed
+    def on_text_changed(self):
         if self.textField.hasFocus():
             text = self.textField.toPlainText()
             enc = gpgcli.enc(str(text), self.rec)
             self.cipherTextField.setText(enc)
 
-    @Slot()									#Update Text if Encrypted Text hast changed
-    def onCipherChanged(self):
+    @Slot()  # update text if the encrypted text hast changed
+    def on_ciphertext_changed(self):
         if self.cipherTextField.hasFocus():
-            cipherText = self.cipherTextField.toPlainText()
-            dec = gpgcli.dec(cipherText, self.passwd)
+            cipher_text = self.cipherTextField.toPlainText()
+            dec = gpgcli.dec(cipher_text, self.passwd)
             self.textField.setText(str(dec))
 
-    @Slot()									#Update the Receiver and update the Encrypted Text
-    def onReceiverChanged(self):
+    @Slot()  # update the recipient and the encrypted text
+    def on_recipient_changed(self):
         self.rec = self.keyBox.currentText()
-        self.updateCipher()
+        self.update_cipher()
 
-    @Slot()									#Update the Passphrase and update the Text
-    def onPassphraseEntered(self):
+    @Slot()  # update the passphrase and update the text
+    def on_passphrase_entered(self):
         self.passwd = self.passphraseEdit.text()
-        self.updateText()
+        self.update_text()
 
-    @Slot()									#Un/Hide the Passphrase (of all Passphrases shown)
-    def onHideBoxChecked(self):
-        if self.hideBox.isChecked() == True:
+    @Slot()  # un/hide the passphrase (of all passphrases)
+    def on_hide_box_checked(self):
+        if self.hideBox.isChecked():
             self.passphraseEdit.setEchoMode(QLineEdit.Normal)
             try:
                 self.phraseEdit.setEchoMode(QLineEdit.Normal)
-            except:
+            except RuntimeError:
                 pass
         else:
             self.passphraseEdit.setEchoMode(QLineEdit.Password)
             try:
                 self.phraseEdit.setEchoMode(QLineEdit.Password)
-            except:
+            except RuntimeError:
                 pass
 
 
-gui = gpgui()
-app.exec_()									#Execute the Application
+gui = GPGui()
+app.exec_()  # execute the application
