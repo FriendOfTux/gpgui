@@ -178,14 +178,17 @@ class GPGui(QWidget):
 
     @Slot()
     def remove_key_layout(self):  # remove line-edits and Button after a key was created/deleted
-        if self.keyAddLayout is not None:
-            while self.keyAddLayout.count():
-                item = self.keyAddLayout.takeAt(0)
-                widget = item.widget()
-                if widget is not None:
-                    widget.deleteLater()
-                else:
-                    self.layout.clearLayout(item.layout())
+        try:
+            if self.keyAddLayout is not None:
+                while self.keyAddLayout.count():
+                    item = self.keyAddLayout.takeAt(0)
+                    widget = item.widget()
+                    if widget is not None:
+                        widget.deleteLater()
+                    else:
+                        self.layout.clearLayout(item.layout())
+        except AttributeError:
+            pass
 
     @Slot()
     def import_key_file(self):  # import public key
