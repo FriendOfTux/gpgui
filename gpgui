@@ -6,10 +6,10 @@ import pyperclip	#clipboard support
 
 from PySide6.QtCore import Slot		#slots
 from PySide6.QtGui import QAction	#actions
-from PySide6.QtWidgets import QApplication, QWidget, \	#items
+from PySide6.QtWidgets import QApplication, QWidget, \
     QTextEdit, QLineEdit, QMenuBar, QMenu, QCheckBox, \
     QFileDialog, QComboBox, QGridLayout, QHBoxLayout, \
-    QLabel, QPushButton, QMessageBox
+    QLabel, QPushButton, QMessageBox #items
 
 app = QApplication()	#applicaton
 
