@@ -1,18 +1,20 @@
 #!/usr/bin/python3
 
-import gpgcli
+import gpgcli		#"backend"
 
-from PySide6.QtCore import Slot
-from PySide6.QtGui import QAction
-from PySide6.QtWidgets import QApplication, QWidget, \
+import pyperclip	#clipboard support
+
+from PySide6.QtCore import Slot		#slots
+from PySide6.QtGui import QAction	#actions
+from PySide6.QtWidgets import QApplication, QWidget, \	#items
     QTextEdit, QLineEdit, QMenuBar, QMenu, QCheckBox, \
     QFileDialog, QComboBox, QGridLayout, QHBoxLayout, \
     QLabel, QPushButton, QMessageBox
 
-app = QApplication()
+app = QApplication()	#applicaton
 
 
-class GPGui(QWidget):
+class GPGui(QWidget):	#gui
 
     def __init__(self):
         QWidget.__init__(self)
@@ -39,6 +41,11 @@ class GPGui(QWidget):
         self.importCipherTextAction = QAction("Import Cipher Text")
         self.importCipherTextAction.triggered.connect(self.import_cipher_text)
         self.importMenu.addAction(self.importCipherTextAction)
+        #self.fromClipboardAction = QAction("Auto-Paste")		#to auto paste more threads are needed to detect changes - delayed
+        #self.fromClipboardAction.triggered.connect(self.fromClipboard)
+        #self.exportMenu.addAction(self.fromClipboardAction)
+        #self.cipherTextField.setText(pyperclip.paste())
+        #self.import_from_clipboard = False
 
         self.exportMenu = QMenu("Export")  # create a "export" menu
         self.menuBar.addMenu(self.exportMenu)
@@ -51,6 +58,10 @@ class GPGui(QWidget):
         self.exportCipherTextAction = QAction("Export Cipher Text")
         self.exportCipherTextAction.triggered.connect(self.export_cipher_text)
         self.exportMenu.addAction(self.exportCipherTextAction)
+        self.toClipboardAction = QAction("Auto-Copy")
+        self.toClipboardAction.triggered.connect(self.toClipboard)
+        self.exportMenu.addAction(self.toClipboardAction)
+        self.export_to_clipboard = False
 
         self.signMenu = QMenu("Signatures")  # create a "signatures" menu
         self.menuBar.addMenu(self.signMenu)
@@ -114,6 +125,7 @@ class GPGui(QWidget):
             print("No keys found, so no Recipient selected")
         self.show()
 
+
     def update_text(self):  # update the decrypted text if eg the passphrase has changed
         cipher_text = self.cipherTextField.toPlainText()
         dec = gpgcli.dec(cipher_text, self.passwd)
@@ -122,6 +134,8 @@ class GPGui(QWidget):
     def update_cipher(self):  # update the encrypted text if eg the recipient has changed
         text = self.textField.toPlainText()
         enc = gpgcli.enc(str(text), self.rec)
+        if self.export_to_clipboard:
+            pyperclip.copy(str(enc))
         self.cipherTextField.setText(enc)
 
     def update_key_box(self):  # update the combobox containing the keys (add only)
@@ -204,6 +218,10 @@ class GPGui(QWidget):
         self.cipherTextField.setText(file.read())
         self.update_text()
 
+#    @Slot()
+#    def fromClipboard(self):
+#        self.import_from_clipboard = not self.import_from_clipboard
+
     @Slot()
     def export_key_file(self):  # export pubic key
         uid = self.keyBox.currentText()
@@ -225,12 +243,19 @@ class GPGui(QWidget):
             file.write(str(clear_text))
 
     @Slot()
+    def toClipboard(self):	#activate 'copy encrypted message to clipboard'
+        self.export_to_clipboard = not self.export_to_clipboard
+        if self.export_to_clipboard:
+            enc = self.cipherTextField.toPlainText()
+            self.cipherTextField.toPlainText()
+
+    @Slot()
     def add_key_layout(self):  # add items as needed (create/delete key option)
         try:
             self.remove_key_layout()
         except RuntimeError:
             pass
-        button_text = self.sender().text()
+        button_text = self.sender().text()		#add or remove
         self.uidEdit = QLineEdit("EMail")
         self.phraseEdit = QLineEdit("Passphrase")
         self.genButton = QPushButton(button_text)
@@ -266,7 +291,7 @@ class GPGui(QWidget):
         keys = gpgcli.list_keys(False, 2)
         i = 0
         fingerprint = ""
-        for k in keys[0]:
+        for k in keys[0]:		#find fingerprint based on email
             if k == uid:
                 fingerprint = keys[1][i]
             i = i + 1
@@ -299,7 +324,7 @@ class GPGui(QWidget):
             pass
         sig_status = ""
         sig_files = QFileDialog.getOpenFileNames()
-        if ".sig" in sig_files[0][0]:
+        if ".sig" in sig_files[0][0]:		#detect signature file
             sign = sig_files[0][0]
             file = sig_files[0][1]
             sig_status = gpgcli.verify_signature(file, sign)
@@ -319,6 +344,8 @@ class GPGui(QWidget):
         if self.textField.hasFocus():
             text = self.textField.toPlainText()
             enc = gpgcli.enc(str(text), self.rec)
+            if self.export_to_clipboard:		#if wished, add ciphertext to clipboard
+                pyperclip.copy(str(enc))
             self.cipherTextField.setText(enc)
 
     @Slot()  # update text if the encrypted text hast changed

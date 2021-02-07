@@ -165,8 +165,8 @@ if len(argv) > 0:  # and organize them with getopt
                'list', 'license', 'passphrase=', 'recipient=', 'info', 'license']
     try:
         opts, args = getopt.getopt(argv, unixOpts, gnuOpts)
-    except getopt.GetoptError:  # if argv[1], etc not in opts print error message
-        print('Invalid arguments')
+    except getopt.GetoptError as err:  # if argv[1], etc not in opts print error message
+        print(err)
         print_help()
         sys.exit(2)
 

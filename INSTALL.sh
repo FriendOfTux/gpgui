@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ `id -u` -eq 0 ] ; 							#check privileges
+if [ $(id -u) -eq 0 ] ; 							#check privileges
 then
 	echo 'Rootcheck passed'
 	sleep 0.5
@@ -16,7 +16,7 @@ Dist=$(cat /etc/*-release | grep ID_LIKE)				#check Distribution
 sleep 0.5
 
 dist_packages=" gpg python3-gnupg python3 python3-pip"			#apt/pacman packages ; python3-gnupg not via pip3 (std version 0.4.6)
-pip_packages=" PySide6  "						#pip3 packages
+pip_packages=" PySide6 pyperclip "					#pip3 packages
 
 
 echo "Installing $dist_packages"					#install packages
