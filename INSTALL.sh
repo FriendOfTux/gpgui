@@ -10,22 +10,31 @@ else
 fi
 
 printf 'Checking Distribution: ' ; sleep 0.5
-Dist=$(cat /etc/*-release | grep ID_LIKE)				#check Distribution
-[[ $Dist =~ "debian" ]] && echo "Found Debian" && act="apt install"
-[[ $Dist =~ "arch" ]] && echo "Found Arch " && act="pacman -S"
+Dist=$(cat /etc/*-release | grep ID)				#check Distribution
+
+if [[ $Dist =~ "debian" ]] ;
+then
+	echo "Found Debian"
+	dist_packages=" gpg python3 python3-pip"			#apt packages
+	echo "Installing $dist_packages"				#install packages
+	sleep 0.5
+	sudo apt install $dist_packages
+	pipver=pip3
+fi
+if [[ $Dist =~ "arch" ]] ;
+then
+	echo "Found Arch "
+	dist_packages=" gnupg python python-pip"			#pacman packages
+	echo "Installing $dist_packages"				#install packages
+	sleep 0.5
+	sudo pacman -S $dist_packages
+	pipver=pip
+fi
+
+
+pip_packages=" python-gnupg PySide6 pyperclip "			#pip packages
+echo "Installing $pip_packages"					#install python packages
 sleep 0.5
-
-dist_packages=" gpg python3-gnupg python3 python3-pip"			#apt/pacman packages ; python3-gnupg not via pip3 (std version 0.4.6)
-pip_packages=" PySide6 pyperclip "					#pip3 packages
-
-
-echo "Installing $dist_packages"					#install packages
-sleep 0.5
-sudo $act $dist_packages
-
-
-echo "Installing $pip_packages"						#install python side-packages
-sleep 0.5
-pip3 install $pip_packages
+$pipver install $pip_packages
 
 chmod +x gpgui gpgcli.py

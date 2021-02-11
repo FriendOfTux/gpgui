@@ -14,6 +14,7 @@ basics about QT-GUI's and getopt.
 CAN:\
 encrypt / decrypt string/file\
 import / export public key\
+send cipher text to clipboard\
 auto-use imported key\
 change recipient\
 un/hide passphrase\
@@ -31,3 +32,8 @@ gpg: 		gnupg.org\
 gnupg:		pythonhosted.org/gnupg/gnupg.html\
 Python Qt:	dc.qt.io/qt-5/
 
+This Software uses the following "" Projects \
+which are published under the () mentioned Licenses: \
+"python-gnupg" (BSD) \
+"PySide6" (LGPL) \
+"gpg" (GPLv3)

@@ -114,26 +114,6 @@ def list_keys(do, mode):  # list all public keys
         return keys, fingerprints
 
 
-def print_license(cli):  # print the license of the program
-    directory = os.path.dirname(os.path.realpath(sys.argv[0]))
-    info_file = open(directory + '/About/License/LICENSE', 'r')
-    project_license = info_file.read()
-    if cli:
-        print(project_license)
-    else:
-        return project_license
-
-
-def print_info(cli):  # print information about the program
-    directory = os.path.dirname(os.path.realpath(sys.argv[0]))
-    info_file = open(directory + '/About/Info', 'r')
-    info = info_file.read()
-    if cli:
-        print(info)
-    else:
-        return info
-
-
 def print_help():  # print out a help menu for the cli
     print('Rules:\n\
 -g/--generate			 	= generate key \n\
@@ -160,9 +140,9 @@ gpgcli.py -p <passphrase> -R <fingerprint>'
 argv = sys.argv[1:]  # use command line arguments with sys
 if len(argv) > 0:  # and organize them with getopt
     import getopt  # create short and long argument list
-    unixOpts = 'f:hgR:r:dev:si:x:lp:IL'
+    unixOpts = 'f:hgR:r:dev:si:x:lp:'
     gnuOpts = ['file=', 'help', 'generate', 'remove=', 'decrypt', 'encrypt', 'verify=', 'sign', 'import', 'export=',
-               'list', 'license', 'passphrase=', 'recipient=', 'info', 'license']
+               'list', 'passphrase=', 'recipient=']
     try:
         opts, args = getopt.getopt(argv, unixOpts, gnuOpts)
     except getopt.GetoptError as err:  # if argv[1], etc not in opts print error message
@@ -228,7 +208,3 @@ if len(argv) > 0:  # and organize them with getopt
         elif opt in ['-l', '--list']:
             print("List of Public Keys:")  # list public keys and fingerprints
             list_keys(True, 2)
-        elif opt in ['-L', '--license']:  # print license
-            print_license(True)
-        elif opt in ['-I', '--info']:  # print info about the script
-            print_info(True)

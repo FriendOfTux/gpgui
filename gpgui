@@ -72,15 +72,6 @@ class GPGui(QWidget):	#gui
         self.verifySignatureAction.triggered.connect(self.verify_signature)
         self.signMenu.addAction(self.verifySignatureAction)
 
-        self.aboutMenu = QMenu("About")  # create a "about" menu
-        self.menuBar.addMenu(self.aboutMenu)
-        self.infoAction = QAction("Info")
-        self.infoAction.triggered.connect(self.display_info)
-        self.aboutMenu.addAction(self.infoAction)
-        self.licenseAction = QAction("License")
-        self.licenseAction.triggered.connect(self.display_license)
-        self.aboutMenu.addAction(self.licenseAction)
-
         self.textField = QTextEdit("Insert Text here")  # create a field for the cleartext
         self.textField.textChanged.connect(self.on_text_changed)
         self.layout.addWidget(self.textField, 1, 0)
@@ -152,20 +143,6 @@ class GPGui(QWidget):	#gui
         self.removeLabelButton = QPushButton("OK")
         self.removeLabelButton.clicked.connect(self.remove_status_layout)
         self.statusLayout.addWidget(self.removeLabelButton)
-
-    @Slot()
-    def display_license(self):  # create a popup to show the license
-        project_license = gpgcli.print_license(False)
-        msg_box = QMessageBox()
-        msg_box.setText(str(project_license))
-        msg_box.exec_()
-
-    @Slot()  # create a popup to show information about the program
-    def display_info(self):
-        info = gpgcli.print_info(False)
-        msg_box = QMessageBox()
-        msg_box.setText(str(info))
-        msg_box.exec_()
 
     @Slot()  # import text from a file
     def import_clear_text(self):
